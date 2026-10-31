@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lentini Amoblamientos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDK Modules -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, deleteDoc 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Configuración de tu proyecto en Firebase Console
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "tu-proyecto.firebaseapp.com",
+      projectId: "tu-proyecto",
+      storageBucket: "tu-proyecto.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef"
+    };
+
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const productosRef = collection(db, "productos");
+
+    // Estado global en el navegador
+    window.db = db;
+    window.productosRef = productosRef;
+    window.productos = [];
+    window.carrito = [];
+
+    // Escuchar cambios en la base de datos en tiempo real (Realtime Listener)
+    onSnapshot(productosRef, (snapshot) => {
+      window.productos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      window.renderizarTienda();
+      window.renderizarAdmin();
+    });
+  </script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 min-h-screen flex flex-col justify-between">
+
+  <!-- ENCABEZADO / NAVBAR -->
+  <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="navegar('tienda')">
+        <div class="bg-amber-600 text-white p-2 rounded-lg font-bold text-xl">LA</div>
+        <h1 class="text-2xl font-bold tracking-tight">Lentini <span class="text-amber-500 font-normal">Amoblamientos</span></h1>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <button onclick="navegar('tienda')" class="hover:text-amber-400 font-medium transition">Tienda</button>
+        <button onclick="solicitarAccesoAdmin()" class="hover:text-amber-400 font-medium transition text-xs bg-slate-800 px-3 py-1.5 rounded border border-slate-700">
+          <i class="fa-solid font-lock mr-1"></i> Admin
+        </button>
+        <button onclick="abrirCarrito()" class="relative bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span id="contador-carrito" class="bg-slate-900 text-xs px-2 py-0.5 rounded-full">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- VISTA TIENDA (PÚBLICA) -->
+  <main id="vista-tienda" class="max-w-7xl mx-auto px-4 py-8 flex-1">
+    <section class="mb-8">
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">Catálogo de Productos</h2>
+      <p class="text-gray-600">Calidad y confort para cada rincón de tu hogar.</p>
+    </section>
+
+    <!-- GRILLA DE PRODUCTOS -->
+    <div id="grilla-productos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- Carga dinámica -->
+    </div>
+  </main>
+
+  <!-- VISTA ADMINISTRACIÓN (OCULTA POR DEFECTO) -->
+  <main id="vista-admin" class="max-w-7xl mx-auto px-4 py-8 flex-1 hidden">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-slate-800">Panel de Control & Inventario</h2>
+      <button onclick="navegar('tienda')" class="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1.5 rounded">Cerrar Admin</button>
+    </div>
+
+    <!-- FORMULARIO NUEVO PRODUCTO -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border mb-8">
+      <h3 class="text-lg font-bold mb-4">Agregar Nuevo Producto</h3>
+      <form id="form-producto" onsubmit="guardarNuevoProducto(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <input type="text" id="p-nombre" placeholder="Nombre del producto" required class="p-2 border rounded">
+        <input type="number" id="p-precio" placeholder="Precio ($)" required class="p-2 border rounded">
+        <input type="number" id="p-stock" placeholder="Stock inicial" required class="p-2 border rounded">
+        <input type="url" id="p-imagen" placeholder="URL de la Imagen" required class="p-2 border rounded col-span-2">
+        <button type="submit" class="bg-amber-600 text-white font-bold py-2 rounded hover:bg-amber-700 transition">Guardar Producto</button>
+      </form>
+    </div>
+
+    <!-- TABLA DE CONTROL DE INVENTARIO -->
+    <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-slate-100 border-b">
+          <tr>
+            <th class="p-3">Producto</th>
+            <th class="p-3">Precio</th>
+            <th class="p-3">Stock</th>
+            <th class="p-3">Visibilidad en Tienda</th>
+            <th class="p-3 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-admin">
+          <!-- Carga dinámica -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- MODAL CARRITO -->
+  <div id="modal-carrito" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-end z-50 hidden">
+    <div class="bg-white w-full max-w-md h-full p-6 flex flex-col justify-between shadow-2xl">
+      <div>
+        <div class="flex justify-between items-center border-b pb-4 mb-4">
+          <h3 class="text-xl font-bold">Tu Carrito</h3>
+          <button onclick="cerrarCarrito()" class="text-gray-500 text-xl font-bold">&times;</button>
+        </div>
+        <div id="items-carrito" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2"></div>
+      </div>
+      
+      <div class="border-t pt-4">
+        <div class="flex justify-between text-lg font-bold mb-4">
+          <span>Total:</span>
+          <span id="total-carrito">$0</span>
+        </div>
+        <button onclick="enviarPedidoWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg flex justify-center items-center gap-2 transition">
+          <i class="fa-brands fa-whatsapp text-xl"></i> Confirmar por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm border-t border-slate-800">
+    <p>© 2026 Lentini Amoblamientos. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- LÓGICA DE LA APLICACIÓN -->
+  <script>
+    function navegar(vista) {
+      document.getElementById('vista-tienda').classList.add('hidden');
+      document.getElementById('vista-admin').classList.add('hidden');
+      if (vista === 'admin') document.getElementById('vista-admin').classList.remove('hidden');
+      else document.getElementById('vista-tienda').classList.remove('hidden');
+    }
+
+    function solicitarAccesoAdmin() {
+      const clave = prompt("Ingrese la clave de administración:");
+      if (clave === "admin123") navegar('admin');
+      else if (clave) alert("Clave incorrecta.");
+    }
+
+    // Renderizar productos en la Tienda (Solo con Stock y Visibles)
+    window.renderizarTienda = function() {
+      const contenedor = document.getElementById('grilla-productos');
+      contenedor.innerHTML = '';
+      
+      const productosVisibles = window.productos.filter(p => p.visible && p.stock > 0);
+      
+      if (productosVisibles.length === 0) {
+        contenedor.innerHTML = `<p class="col-span-full text-center text-gray-500 py-12">No hay productos disponibles por el momento.</p>`;
+        return;
+      }
+
+      productosVisibles.forEach(p => {
+        contenedor.innerHTML += `
+          <div class="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+            <img src="${p.imagen}" alt="${p.nombre}" class="h-48 w-full object-cover">
+            <div class="p-4">
+              <h3 class="font-bold text-slate-800 text-lg mb-1">${p.nombre}</h3>
+              <p class="text-amber-600 font-extrabold text-xl mb-4">$${p.precio.toLocaleString('es-AR')}</p>
+              <button onclick="agregarAlCarrito('${p.id}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2 rounded-lg transition">
+                Agregar al Carrito
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // Renderizar Panel de Administración
+    window.renderizarAdmin = function() {
+      const tabla = document.getElementById('tabla-admin');
+      tabla.innerHTML = '';
+
+      window.productos.forEach(p => {
+        tabla.innerHTML += `
+          <tr class="border-b text-sm">
+            <td class="p-3 font-medium flex items-center gap-3">
+              <img src="${p.imagen}" class="w-10 h-10 rounded object-cover"> ${p.nombre}
+            </td>
+            <td class="p-3">$${p.precio.toLocaleString('es-AR')}</td>
+            <td class="p-3">
+              <input type="number" value="${p.stock}" onchange="actualizarStock('${p.id}', this.value)" class="w-16 p-1 border rounded text-center">
+            </td>
+            <td class="p-3">
+              <button onclick="alternarVisibilidad('${p.id}', ${!p.visible})" class="px-3 py-1 rounded text-xs font-semibold ${p.visible ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
+                ${p.visible ? 'Visible' : 'Oculto'}
+              </button>
+            </td>
+            <td class="p-3 text-right">
+              <button onclick="eliminarProducto('${p.id}')" class="text-rose-600 hover:text-rose-800"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Funciones Firebase (Acciones en tiempo real)
+    async function guardarNuevoProducto(e) {
+      e.preventDefault();
+      const nuevo = {
+        nombre: document.getElementById('p-nombre').value,
+        precio: Number(document.getElementById('p-precio').value),
+        stock: Number(document.getElementById('p-stock').value),
+        imagen: document.getElementById('p-imagen').value,
+        visible: true
+      };
+      const { addDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      await addDoc(window.productosRef, nuevo);
+      document.getElementById('form-producto').reset();
+    }
+
+    async function actualizarStock(id, nuevoStock) {
+      const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      await updateDoc(doc(window.db, "productos", id), { stock: Number(nuevoStock) });
+    }
+
+    async function alternarVisibilidad(id, estado) {
+      const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      await updateDoc(doc(window.db, "productos", id), { visible: estado });
+    }
+
+    async function eliminarProducto(id) {
+      if (!confirm("¿Eliminar este producto permanentemente?")) return;
+      const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      await deleteDoc(doc(window.db, "productos", id));
+    }
+
+    // Carrito
+    function agregarAlCarrito(id) {
+      const prod = window.productos.find(p => p.id === id);
+      const existe = window.carrito.find(item => item.id === id);
+      if (existe) existe.cantidad++;
+      else window.carrito.push({ ...prod, cantidad: 1 });
+      actualizarCarritoUI();
+    }
+
+    function actualizarCarritoUI() {
+      document.getElementById('contador-carrito').innerText = window.carrito.reduce((acc, i) => acc + i.cantidad, 0);
+      const contenedor = document.getElementById('items-carrito');
+      contenedor.innerHTML = '';
+      let total = 0;
+
+      window.carrito.forEach(item => {
+        total += item.precio * item.cantidad;
+        contenedor.innerHTML += `
+          <div class="flex justify-between items-center border-b pb-2">
+            <div>
+              <h4 class="font-bold text-sm">${item.nombre}</h4>
+              <span class="text-xs text-gray-500">$${item.precio.toLocaleString('es-AR')} x ${item.cantidad}</span>
+            </div>
+            <span class="font-bold">$${(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
+          </div>
+        `;
+      });
+      document.getElementById('total-carrito').innerText = `$${total.toLocaleString('es-AR')}`;
+    }
+
+    function abrirCarrito() { document.getElementById('modal-carrito').classList.remove('hidden'); }
+    function cerrarCarrito() { document.getElementById('modal-carrito').classList.add('hidden'); }
+
+    function enviarPedidoWhatsApp() {
+      if (window.carrito.length === 0) return alert("Tu carrito está vacío.");
+      let mensaje = "¡Hola Lentini Amoblamientos! Quiero realizar el siguiente pedido:\n\n";
+      window.carrito.forEach(i => mensaje += `- ${i.nombre} (x${i.cantidad})\n`);
+      const total = window.carrito.reduce((acc, i) => acc + (i.precio * i.cantidad), 0);
+      mensaje += `\nTotal: $${total.toLocaleString('es-AR')}`;
+      window.open(`https://wa.me/5493510000000?text=${encodeURIComponent(mensaje)}`, '_blank');
+    }
+  </script>
+</body>
+</html>

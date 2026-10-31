@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lentini Amoblamientos - Muebles y Colchones</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        marca: {
+                            50: '#fdf8f6',
+                            100: '#f2e8e5',
+                            500: '#a35029',
+                            600: '#8c3d19',
+                            700: '#732e11',
+                            900: '#3d1607',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sin-scrollbar::-webkit-scrollbar { display: none; }
+        .sin-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .animacion-aparecer { animation: aparecer 0.25s ease-in-out; }
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans min-h-screen flex flex-col justify-between antialiased">
+
+    <!-- ANUNCIO INFORMATIVO SUPERIOR -->
+    <div class="bg-marca-900 text-stone-200 text-xs sm:text-sm py-2 px-4 text-center font-medium tracking-wide flex justify-center items-center gap-2">
+        <i class="fa-solid fa-truck-fast text-amber-400"></i>
+        <span>Envíos a todo el país | <strong>12 Cuotas Sin Interés</strong> o <strong>15% OFF</strong> por Transferencia</span>
+    </div>
+
+    <!-- NAVEGACIÓN CLIENTES -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo Lentini Amoblamientos -->
+            <a href="#" onclick="cerrarSesionAdmin()" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-marca-600 text-white rounded-xl flex items-center justify-center font-black text-xl shadow-md group-hover:bg-marca-700 transition-colors">
+                    L
+                </div>
+                <div>
+                    <span class="text-xl sm:text-2xl font-extrabold tracking-tight text-stone-900 block leading-none">
+                        LENTINI
+                    </span>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-marca-600 block mt-0.5">
+                        Amoblamientos
+                    </span>
+                </div>
+            </a>
+
+            <!-- Menú de la tienda -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold">
+                <button onclick="cerrarSesionAdmin()" class="text-stone-700 hover:text-marca-600 transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-store"></i> Tienda
+                </button>
+                <button onclick="desplazarASeccion('catalogo')" class="text-stone-700 hover:text-marca-600 transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-couch"></i> Productos
+                </button>
+                <button onclick="desplazarASeccion('nosotros')" class="text-stone-700 hover:text-marca-600 transition-colors">
+                    Nosotros
+                </button>
+            </nav>
+
+            <!-- Carrito y Acceso -->
+            <div class="flex items-center gap-3">
+                <!-- Indicador de Administrador Activo si inició sesión -->
+                <div id="indicador-admin-activo" class="hidden flex items-center gap-2">
+                    <button onclick="cambiarPestana('admin')" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-sliders"></i> Panel Admin
+                    </button>
+                    <button onclick="cerrarSesionAdmin()" class="text-stone-400 hover:text-stone-600 p-2 text-xs font-bold" title="Cerrar sesión de admin">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+
+                <button onclick="mostrarModalCarrito(true)" class="relative p-2.5 bg-marca-50 text-marca-700 hover:bg-marca-100 rounded-xl transition-all flex items-center justify-center">
+                    <i class="fa-solid fa-basket-shopping text-xl"></i>
+                    <span id="insignia-carrito" class="absolute -top-1 -right-1 bg-marca-600 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                        0
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- VISTA PÚBLICA PARA CLIENTES -->
+    <main id="vista-cliente" class="flex-grow">
+        <!-- Hero Banner -->
+        <section class="relative bg-stone-900 text-white overflow-hidden py-16 lg:py-24">
+            <div class="absolute inset-0 z-0 opacity-40 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80');"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-stone-950 via-stone-900/80 to-transparent z-10"></div>
+            
+            <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-2xl">
+                    <span class="inline-block px-3 py-1 bg-marca-500/30 text-amber-300 border border-marca-400/40 rounded-full text-xs font-bold tracking-wider uppercase mb-4">
+                        Calidad & Confort Garantizado
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-6 leading-tight">
+                        Transformá tu hogar en tu lugar favorito.
+                    </h1>
+                    <p class="text-stone-300 text-base sm:text-lg mb-8 font-normal leading-relaxed">
+                        Muebles de diseño, juegos de comedor, sommiers y colchones con tecnología de descanso superior. Fabricación propia e importación directa.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#catalogo" class="px-7 py-3.5 bg-marca-600 hover:bg-marca-700 text-white font-bold rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 text-center">
+                            Ver Catálogo
+                        </a>
+                        <button onclick="abrirConsultaWhatsApp('Hola Lentini Amoblamientos, quisiera solicitar asesoramiento personalizado.')" class="px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> Asesoramiento WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATÁLOGO PÚBLICO -->
+        <section id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <!-- Barra de Búsqueda y Categorías -->
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-8">
+                <div class="relative w-full md:w-80">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"></i>
+                    <input type="text" id="campo-busqueda" oninput="renderizarCatalogo()" placeholder="Buscar colchón, mesa, sillón..." class="w-full pl-11 pr-4 py-3 bg-white border border-stone-200 rounded-xl focus:ring-2 focus:ring-marca-500 focus:outline-none text-sm transition-all shadow-sm">
+                </div>
+
+                <div id="botones-categoria" class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 sin-scrollbar">
+                    <!-- Categorías dinámicas -->
+                </div>
+            </div>
+
+            <!-- Grilla de Productos -->
+            <div id="grilla-productos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Productos dinámicos visibles -->
+            </div>
+
+            <!-- Sin resultados -->
+            <div id="estado-catalogo-vacio" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-stone-300 my-6">
+                <i class="fa-solid fa-couch text-5xl text-stone-300 mb-4"></i>
+                <h3 class="text-lg font-bold text-stone-700">No encontramos productos en esta sección</h3>
+                <p class="text-stone-500 text-sm mt-1">Intenta cambiar el término de búsqueda o seleccionar otra categoría.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- PANEL ADMINISTRATIVO PROTEGIDO POR CONTRASEÑA -->
+    <main id="vista-admin" class="hidden flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full animacion-aparecer">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-wider">Acceso Restringido</span>
+                    <h1 class="text-2xl font-black text-stone-900 flex items-center gap-2">
+                        <i class="fa-solid fa-boxes-packing text-marca-600"></i> Panel de Gestión de Stock
+                    </h1>
+                </div>
+                <p class="text-stone-500 text-sm mt-1">Modificá precios, stock, imágenes y ocultá los productos que no quieras mostrar a los clientes.</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="restablecerStockPredeterminado()" class="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold rounded-xl transition-colors border border-stone-300">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> Cargar Datos Demo
+                </button>
+                <button onclick="cerrarSesionAdmin()" class="px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-lock"></i> Salir del Admin
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Formulario para agregar / editar productos -->
+            <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm h-fit">
+                <h2 id="titulo-formulario" class="text-lg font-bold text-stone-900 mb-4 pb-2 border-b border-stone-100 flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle text-marca-600"></i> Agregar Nuevo Producto
+                </h2>
+                
+                <form id="formulario-producto" onsubmit="guardarProducto(event)" class="space-y-4">
+                    <input type="hidden" id="prod-id">
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Nombre del Producto</label>
+                        <input type="text" id="prod-nombre" required placeholder="Ej: Sillón Chesterfield 3 Cuerpos" class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-marca-500 focus:outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Categoría</label>
+                            <select id="prod-categoria" required class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-marca-500 focus:outline-none bg-white">
+                                <option value="Colchones y Sommiers">Colchones y Sommiers</option>
+                                <option value="Muebles">Muebles</option>
+                                <option value="Dormitorio">Dormitorio</option>
+                                <option value="Living">Living</option>
+                                <option value="Comedor">Comedor</option>
+                                <option value="Ofertas">Ofertas</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Precio ($)</label>
+                            <input type="number" id="prod-precio" min="0" required placeholder="150000" class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-marca-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Stock Disponibilidad</label>
+                            <input type="number" id="prod-stock" min="0" required placeholder="5" class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-marca-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Visibilidad Cliente</label>
+                            <select id="prod-visible" class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-marca-500 focus:outline-none bg-white">
+                                <option value="true">Visible (Publicado)</option>
+                                <option value="false">Oculto a Clientes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Imagen del Producto</label>
+                        <div class="space-y-2">
+                            <input type="url" id="prod-imagen-url" placeholder="URL de la foto (https://...)" class="w-full px-3.5 py-2 border border-stone-300 rounded-xl text-xs focus:ring-2 focus:ring-marca-500 focus:outline-none">
+                            <div class="text-center text-[10px] text-stone-400 font-bold uppercase">O Subir Imagen desde el Equipo</div>
+                            <input type="file" id="prod-imagen-archivo" accept="image/*" onchange="convertirImagenABase64()" class="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-marca-50 file:text-marca-700 hover:file:bg-marca-100 cursor-pointer">
+                        </div>
+                        <input type="hidden" id="prod-imagen-b64">
+                    </div>
+
+                    <div id="contenedor-previsualizacion" class="hidden mt-2 border border-stone-200 rounded-xl p-2 bg-stone-50 text-center">
+                        <span class="text-[10px] font-bold text-stone-400 block uppercase mb-1">Vista previa</span>
+                        <img id="imagen-previsualizacion" src="" class="max-h-28 mx-auto rounded-lg object-contain">
+                    </div>
+
+                    <div class="pt-2 flex gap-2">
+                        <button type="submit" class="flex-1 bg-marca-600 hover:bg-marca-700 text-white font-bold py-3 rounded-xl transition-colors text-sm shadow-md">
+                            Guardar Producto
+                        </button>
+                        <button type="button" onclick="limpiarFormulario()" class="px-4 bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold rounded-xl transition-colors text-xs">
+                            Limpiar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabla del inventario completo -->
+            <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
+                <div class="p-4 border-b border-stone-200 bg-stone-50 flex justify-between items-center">
+                    <h3 class="font-bold text-stone-800 text-sm">Inventario Total (<span id="conteo-admin">0</span> productos)</h3>
+                    <span class="text-xs text-stone-500"><i class="fa-solid fa-eye-slash text-stone-400 mr-1"></i> Sin stock u ocultos no se muestran en tienda</span>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-stone-100 text-stone-600 font-bold border-b border-stone-200 uppercase tracking-wider">
+                            <tr>
+                                <th class="p-3">Producto</th>
+                                <th class="p-3">Categoría</th>
+                                <th class="p-3">Precio</th>
+                                <th class="p-3 text-center">Stock</th>
+                                <th class="p-3 text-center">Estado Cliente</th>
+                                <th class="p-3 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-admin" class="divide-y divide-stone-100">
+                            <!-- Datos dinámicos -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL DE LOGIN DE ADMINISTRADOR -->
+    <div id="modal-login-admin" class="fixed inset-0 z-50 hidden animacion-aparecer">
+        <div onclick="cerrarModalLoginAdmin()" class="absolute inset-0 bg-stone-900/70 backdrop-blur-sm"></div>
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl border border-stone-200 p-6 space-y-5">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-stone-900 text-white rounded-2xl flex items-center justify-center font-black text-xl mx-auto mb-3 shadow-md">
+                        <i class="fa-solid fa-lock text-amber-400"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-stone-900">Acceso Administrador</h2>
+                    <p class="text-xs text-stone-500 mt-1">Ingresá la contraseña de gestión de stock.</p>
+                </div>
+
+                <form onsubmit="autenticarAdmin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Contraseña</label>
+                        <input type="password" id="clave-admin-input" required placeholder="••••••••" class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-marca-500 focus:outline-none">
+                        <span class="text-[11px] text-stone-400 block mt-1">Clave por defecto: <strong>admin123</strong></span>
+                    </div>
+
+                    <div id="error-login" class="hidden text-xs text-rose-600 font-bold bg-rose-50 p-2.5 rounded-lg text-center border border-rose-200">
+                        Contraseña incorrecta. Intente nuevamente.
+                    </div>
+
+                    <button type="submit" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-bold py-3 rounded-xl shadow-md transition-all text-sm flex items-center justify-center gap-2">
+                        <span>Ingresar al Panel</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CARRITO -->
+    <div id="modal-carrito" class="fixed inset-0 z-50 hidden animacion-aparecer">
+        <div onclick="mostrarModalCarrito(false)" class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm"></div>
+
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col justify-between">
+            <div class="p-5 border-b border-stone-200 flex items-center justify-between bg-stone-50">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bag-shopping text-marca-600 text-xl"></i>
+                    <h2 class="text-lg font-bold text-stone-900">Tu Carrito de Compras</h2>
+                </div>
+                <button onclick="mostrarModalCarrito(false)" class="w-8 h-8 rounded-full bg-stone-200 hover:bg-stone-300 text-stone-600 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div id="contenedor-items-carrito" class="flex-grow overflow-y-auto p-5 space-y-4">
+                <!-- Se renderiza dinámicamente -->
+            </div>
+
+            <div class="p-5 border-t border-stone-200 bg-stone-50 space-y-4">
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between text-stone-600">
+                        <span>Subtotal:</span>
+                        <span id="subtotal-carrito" class="font-semibold">$0</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-black text-stone-900 pt-2 border-t border-stone-200">
+                        <span>Total estimado:</span>
+                        <span id="total-carrito" class="text-marca-600">$0</span>
+                    </div>
+                </div>
+
+                <button onclick="abrirModalPago()" id="btn-iniciar-pago" class="w-full bg-marca-600 hover:bg-marca-700 text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span>Proceder al Pago</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE PAGO / CHECKOUT -->
+    <div id="modal-pago" class="fixed inset-0 z-50 hidden animacion-aparecer overflow-y-auto">
+        <div onclick="cerrarModalPago()" class="fixed inset-0 bg-stone-900/70 backdrop-blur-sm"></div>
+        
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-stone-200 p-6 sm:p-8 space-y-6 my-8">
+                <div class="flex justify-between items-center border-b border-stone-200 pb-4">
+                    <h2 class="text-xl font-bold text-stone-900 flex items-center gap-2">
+                        <i class="fa-regular fa-credit-card text-marca-600"></i> Finalizar Compra y Método de Pago
+                    </h2>
+                    <button onclick="cerrarModalPago()" class="text-stone-400 hover:text-stone-600">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <form id="formulario-pago" onsubmit="enviarPedidoWhatsApp(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Nombre Completo</label>
+                            <input type="text" id="nombre-cliente" required placeholder="Juan Pérez" class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-marca-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Teléfono / WhatsApp</label>
+                            <input type="tel" id="telefono-cliente" required placeholder="351 1234567" class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-marca-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-stone-600 mb-2">Forma de Entrega</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center gap-3 p-3 border border-stone-200 rounded-xl cursor-pointer hover:bg-stone-50 transition-colors">
+                                <input type="radio" name="entrega" value="envio" checked onchange="alternarCampoDireccion(true)" class="text-marca-600 focus:ring-marca-500">
+                                <div>
+                                    <span class="block text-xs font-bold text-stone-800">Envío a Domicilio</span>
+                                    <span class="text-[11px] text-stone-500">Coordinar flete local</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-stone-200 rounded-xl cursor-pointer hover:bg-stone-50 transition-colors">
+                                <input type="radio" name="entrega" value="retiro" onchange="alternarCampoDireccion(false)" class="text-marca-600 focus:ring-marca-500">
+                                <div>
+                                    <span class="block text-xs font-bold text-stone-800">Retiro por Sucursal</span>
+                                    <span class="text-[11px] text-stone-500">Sin costo adicional</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="contenedor-direccion">
+                        <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Dirección de Entrega y Ciudad</label>
+                        <input type="text" id="direccion-cliente" required placeholder="Calle Av. Siempre Viva 123, Depto 2B" class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-marca-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-stone-600 mb-2">Seleccioná Medio de Pago</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center justify-between p-3.5 border border-stone-200 rounded-xl cursor-pointer hover:bg-stone-50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="pago" value="transferencia" checked onchange="actualizarCalculoPago()" class="text-marca-600 focus:ring-marca-500">
+                                    <div>
+                                        <span class="font-bold text-xs text-stone-900 block">Transferencia / Depósito Bancario</span>
+                                        <span class="text-[11px] text-emerald-600 font-semibold">15% de Descuento directo en el total</span>
+                                    </div>
+                                </div>
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-1 rounded-md">15% OFF</span>
+                            </label>
+
+                            <label class="flex items-center justify-between p-3.5 border border-stone-200 rounded-xl cursor-pointer hover:bg-stone-50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="pago" value="tarjeta" onchange="actualizarCalculoPago()" class="text-marca-600 focus:ring-marca-500">
+                                    <div>
+                                        <span class="font-bold text-xs text-stone-900 block">Tarjeta de Crédito / Débito</span>
+                                        <span class="text-[11px] text-stone-500">Hasta 12 cuotas sin interés en el local</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-1 text-stone-400">
+                                    <i class="fa-brands fa-cc-visa text-lg"></i>
+                                    <i class="fa-brands fa-cc-mastercard text-lg"></i>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center justify-between p-3.5 border border-stone-200 rounded-xl cursor-pointer hover:bg-stone-50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="pago" value="efectivo" onchange="actualizarCalculoPago()" class="text-marca-600 focus:ring-marca-500">
+                                    <div>
+                                        <span class="font-bold text-xs text-stone-900 block">Efectivo contra entrega / Sucursal</span>
+                                        <span class="text-[11px] text-stone-500">Abonar al recibir o al retirar</span>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-money-bill-wave text-emerald-600"></i>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 space-y-1.5 text-xs">
+                        <div class="flex justify-between text-stone-600">
+                            <span>Subtotal productos:</span>
+                            <span id="checkout-subtotal">$0</span>
+                        </div>
+                        <div id="checkout-fila-descuento" class="flex justify-between text-emerald-600 font-bold">
+                            <span>Descuento Transferencia (15%):</span>
+                            <span id="checkout-descuento">-$0</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-black text-stone-900 pt-2 border-t border-stone-200">
+                            <span>TOTAL A PAGAR:</span>
+                            <span id="checkout-total-final" class="text-marca-600 text-base">$0</span>
+                        </div>
+                        <div id="pista-cuotas" class="hidden text-[11px] text-marca-700 font-medium pt-1 text-center bg-marca-50 p-1.5 rounded-md">
+                            <i class="fa-solid fa-credit-card mr-1"></i> Disponible en <strong>12 cuotas sin interés de <span id="precio-cuota">$0</span></strong>.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-base">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                        <span>Enviar Pedido por WhatsApp</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIE DE PÁGINA (CON ENLACE DISCRETO DE ACCESO ADMIN) -->
+    <footer class="bg-stone-900 text-stone-400 py-12 border-t border-stone-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 bg-marca-600 text-white rounded-lg flex items-center justify-center font-bold text-lg">L</div>
+                    <span class="text-lg font-black text-white tracking-tight">LENTINI AMOBLAMIENTOS</span>
+                </div>
+                <p class="text-xs text-stone-400 leading-relaxed">
+                    Especialistas en confort, mueblería y descanso. Diseños modernos y duraderos para elevar la calidez de tu hogar.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-white text-xs font-bold uppercase tracking-wider mb-3">Contacto & Atención</h4>
+                <ul class="text-xs space-y-2">
+                    <li><i class="fa-solid fa-location-dot mr-2 text-marca-500"></i> Av. Buenos Aires 871</li>
+                    <li><i class="fa-brands fa-whatsapp mr-2 text-emerald-500"></i> +54 3548 569873</li>
+                    <li><i class="fa-regular fa-clock mr-2 text-marca-500"></i> Lunes a Sábados: 09:00 a 13:00 hs - 16:00 a 20:00 hs</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white text-xs font-bold uppercase tracking-wider mb-3">Medios de Pago</h4>
+                <div class="flex flex-wrap gap-2 text-2xl text-stone-400 mb-4">
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                </div>
+                <!-- Enlace discreto de acceso a Administrador -->
+                <button onclick="solicitarAccesoAdmin()" class="text-[11px] text-stone-500 hover:text-stone-300 transition-colors flex items-center gap-1.5 underline">
+                    <i class="fa-solid fa-lock text-[10px]"></i> Acceso Dueño / Administrador
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LÓGICA COMPLETA JAVASCRIPT -->
+    <script>
+        // DATOS INICIALES
+        const productosIniciales = [
+            {
+                id: 1,
+                nombre: "Sommier y Colchón Matrimonial Lujo 140x190",
+                categoria: "Colchones y Sommiers",
+                precio: 320000,
+                stock: 5,
+                visible: true,
+                imagen: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 2,
+                nombre: "Mesa Comedor Escandinava Roble 160cm",
+                categoria: "Comedor",
+                precio: 210000,
+                stock: 3,
+                visible: true,
+                imagen: "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 3,
+                nombre: "Juego de 4 Sillas Nórdicas Eames Tapizadas",
+                categoria: "Comedor",
+                precio: 145000,
+                stock: 8,
+                visible: true,
+                imagen: "https://images.unsplash.com/photo-1580481072645-022f9a6d1270?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 4,
+                nombre: "Sillón Sofá 3 Cuerpos Chenille Premium",
+                categoria: "Living",
+                precio: 450000,
+                stock: 2,
+                visible: true,
+                imagen: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 5,
+                nombre: "Colchón Espuma Alta Densidad King Size 2x2m",
+                categoria: "Colchones y Sommiers",
+                precio: 490000,
+                stock: 4,
+                visible: true,
+                imagen: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 6,
+                nombre: "Mueble Rack Para TV Moderno Minimalista",
+                categoria: "Ofertas",
+                precio: 98000,
+                stock: 6,
+                visible: true,
+                imagen: "https://images.unsplash.com/photo-1601760562234-9814eaa6613a?auto=format&fit=crop&w=600&q=80"
+            }
+        ];
+
+        // ESTADO GLOBAL
+        let productos = JSON.parse(localStorage.getItem('lentini_productos')) || productosIniciales;
+        let carrito = JSON.parse(localStorage.getItem('lentini_carrito')) || [];
+        let esAdminAutenticado = false;
+        let categoriaSeleccionada = "Todas";
+        const CLAVE_CORRECTA_ADMIN = "admin123";
+
+        // INICIALIZACIÓN
+        window.onload = function() {
+            guardarProductosEnAlmacenamiento();
+            renderizarBotonesCategoria();
+            renderizarCatalogo();
+            actualizarInsigniaCarrito();
+        };
+
+        // CONTROL DE AUTENTICACIÓN ADMIN
+        function solicitarAccesoAdmin() {
+            if (esAdminAutenticado) {
+                cambiarPestana('admin');
+            } else {
+                document.getElementById('error-login').classList.add('hidden');
+                document.getElementById('clave-admin-input').value = '';
+                document.getElementById('modal-login-admin').classList.remove('hidden');
+            }
+        }
+
+        function cerrarModalLoginAdmin() {
+            document.getElementById('modal-login-admin').classList.add('hidden');
+        }
+
+        function autenticarAdmin(evento) {
+            evento.preventDefault();
+            const claveIngresada = document.getElementById('clave-admin-input').value.trim();
+
+            if (claveIngresada === CLAVE_CORRECTA_ADMIN) {
+                esAdminAutenticado = true;
+                cerrarModalLoginAdmin();
+                document.getElementById('indicador-admin-activo').classList.remove('hidden');
+                renderizarTablaAdmin();
+                cambiarPestana('admin');
+            } else {
+                document.getElementById('error-login').classList.remove('hidden');
+            }
+        }
+
+        function cerrarSesionAdmin() {
+            esAdminAutenticado = false;
+            document.getElementById('indicador-admin-activo').classList.add('hidden');
+            cambiarPestana('cliente');
+        }
+
+        function cambiarPestana(pestana) {
+            const vistaCliente = document.getElementById('vista-cliente');
+            const vistaAdmin = document.getElementById('vista-admin');
+
+            if (pestana === 'admin') {
+                if (!esAdminAutenticado) {
+                    solicitarAccesoAdmin();
+                    return;
+                }
+                vistaCliente.classList.add('hidden');
+                vistaAdmin.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                vistaAdmin.classList.add('hidden');
+                vistaCliente.classList.remove('hidden');
+                renderizarCatalogo();
+            }
+        }
+
+        function desplazarASeccion(id) {
+            cambiarPestana('cliente');
+            setTimeout(() => {
+                const elemento = document.getElementById(id);
+                if (elemento) elemento.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        // PERSISTENCIA DE DATOS
+        function guardarProductosEnAlmacenamiento() {
+            localStorage.setItem('lentini_productos', JSON.stringify(productos));
+        }
+
+        function guardarCarritoEnAlmacenamiento() {
+            localStorage.setItem('lentini_carrito', JSON.stringify(carrito));
+            actualizarInsigniaCarrito();
+        }
+
+        function restablecerStockPredeterminado() {
+            if (confirm('¿Desea restablecer todos los productos a los datos de demostración originales?')) {
+                productos = [...productosIniciales];
+                guardarProductosEnAlmacenamiento();
+                renderizarCatalogo();
+                renderizarTablaAdmin();
+            }
+        }
+
+        // CATÁLOGO Y FILTROS
+        const categorias = ["Todas", "Colchones y Sommiers", "Muebles", "Dormitorio", "Living", "Comedor", "Ofertas"];
+
+        function renderizarBotonesCategoria() {
+            const contenedor = document.getElementById('botones-categoria');
+            contenedor.innerHTML = categorias.map(cat => `
+                <button onclick="seleccionarCategoria('${cat}')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${categoriaSeleccionada === cat ? 'bg-marca-600 text-white shadow-sm' : 'bg-white text-stone-600 border border-stone-200 hover:bg-stone-100'}">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function seleccionarCategoria(cat) {
+            categoriaSeleccionada = cat;
+            renderizarBotonesCategoria();
+            renderizarCatalogo();
+        }
+
+        function renderizarCatalogo() {
+            const grilla = document.getElementById('grilla-productos');
+            const estadoVacio = document.getElementById('estado-catalogo-vacio');
+            const busqueda = document.getElementById('campo-busqueda').value.toLowerCase().trim();
+
+            // Filtrado estricto para clientes: Únicamente visibles y con stock disponible (>0)
+            const productosVisibles = productos.filter(p => {
+                const tieneStock = p.stock > 0;
+                const esVisible = p.visible === true;
+                const coincideCategoria = categoriaSeleccionada === "Todas" || p.categoria === categoriaSeleccionada;
+                const coincideBusqueda = p.nombre.toLowerCase().includes(busqueda);
+                return tieneStock && esVisible && coincideCategoria && coincideBusqueda;
+            });
+
+            if (productosVisibles.length === 0) {
+                grilla.innerHTML = '';
+                estadoVacio.classList.remove('hidden');
+                return;
+            }
+
+            estadoVacio.classList.add('hidden');
+            grilla.innerHTML = productosVisibles.map(prod => `
+                <div class="bg-white rounded-2xl border border-stone-200/80 shadow-sm overflow-hidden hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div class="relative overflow-hidden bg-stone-100 h-52">
+                        <img src="${prod.imagen}" alt="${prod.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x400/f2e8e5/8c3d19?text=Lentini+Amoblamientos'">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-stone-800 text-[10px] font-bold px-2.5 py-1 rounded-md shadow-sm uppercase tracking-wider">
+                            ${prod.categoria}
+                        </span>
+                    </div>
+
+                    <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                        <div>
+                            <h3 class="font-bold text-stone-900 text-base leading-snug group-hover:text-marca-600 transition-colors">
+                                ${prod.nombre}
+                            </h3>
+                            <p class="text-xs text-stone-500 mt-1">Stock disponible: <strong class="text-stone-700">${prod.stock} un.</strong></p>
+                        </div>
+
+                        <div>
+                            <div class="mb-3">
+                                <span class="text-xs text-stone-400 block font-medium">Contado / Transferencia</span>
+                                <span class="text-2xl font-black text-marca-600 tracking-tight">$${(prod.precio * 0.85).toLocaleString('es-AR')}</span>
+                                <span class="text-xs text-stone-500 block line-through">$${prod.precio.toLocaleString('es-AR')}</span>
+                            </div>
+
+                            <button onclick="agregarAlCarrito(${prod.id})" class="w-full bg-stone-900 hover:bg-marca-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-colors shadow-sm flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                <span>Agregar al Carrito</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // LÓGICA DEL CARRITO
+        function agregarAlCarrito(idProducto) {
+            const producto = productos.find(p => p.id === idProducto);
+            if (!producto) return;
+
+            const itemExistente = carrito.find(item => item.id === idProducto);
+
+            if (itemExistente) {
+                if (itemExistente.cantidad < producto.stock) {
+                    itemExistente.cantidad++;
+                } else {
+                    alert(`Disponemos de hasta ${producto.stock} unidades en stock.`);
+                    return;
+                }
+            } else {
+                carrito.push({
+                    id: producto.id,
+                    nombre: producto.nombre,
+                    precio: producto.precio,
+                    imagen: producto.imagen,
+                    cantidad: 1
+                });
+            }
+
+            guardarCarritoEnAlmacenamiento();
+            mostrarModalCarrito(true);
+        }
+
+        function actualizarCantidadItem(idProducto, delta) {
+            const item = carrito.find(i => i.id === idProducto);
+            const producto = productos.find(p => p.id === idProducto);
+            if (!item || !producto) return;
+
+            if (delta > 0 && item.cantidad >= producto.stock) {
+                alert(`Límite de stock alcanzado (${producto.stock} disponibles).`);
+                return;
+            }
+
+            item.cantidad += delta;
+            if (item.cantidad <= 0) {
+                carrito = carrito.filter(i => i.id !== idProducto);
+            }
+
+            guardarCarritoEnAlmacenamiento();
+            renderizarModalCarrito();
+        }
+
+        function eliminarDelCarrito(idProducto) {
+            carrito = carrito.filter(i => i.id !== idProducto);
+            guardarCarritoEnAlmacenamiento();
+            renderizarModalCarrito();
+        }
+
+        function actualizarInsigniaCarrito() {
+            const insignia = document.getElementById('insignia-carrito');
+            const totalItems = carrito.reduce((acumulador, item) => acumulador + item.cantidad, 0);
+            insignia.innerText = totalItems;
+        }
+
+        function mostrarModalCarrito(mostrar) {
+            const modal = document.getElementById('modal-carrito');
+            if (mostrar) {
+                renderizarModalCarrito();
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function renderizarModalCarrito() {
+            const contenedor = document.getElementById('contenedor-items-carrito');
+            const btnPago = document.getElementById('btn-iniciar-pago');
+
+            if (carrito.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="text-center py-12 text-stone-400">
+                        <i class="fa-solid fa-basket-shopping text-4xl mb-3"></i>
+                        <p class="text-sm font-semibold">Tu carrito está vacío</p>
+                    </div>
+                `;
+                btnPago.disabled = true;
+                document.getElementById('subtotal-carrito').innerText = '$0';
+                document.getElementById('total-carrito').innerText = '$0';
+                return;
+            }
+
+            btnPago.disabled = false;
+            let subtotal = 0;
+
+            contenedor.innerHTML = carrito.map(item => {
+                const totalItem = item.precio * item.cantidad;
+                subtotal += totalItem;
+                return `
+                    <div class="flex items-center gap-3 p-3 bg-stone-50 rounded-xl border border-stone-200">
+                        <img src="${item.imagen}" alt="${item.nombre}" class="w-14 h-14 object-cover rounded-lg bg-stone-200">
+                        <div class="flex-grow">
+                            <h4 class="text-xs font-bold text-stone-900 leading-tight">${item.nombre}</h4>
+                            <span class="text-xs font-semibold text-marca-600 block mt-1">$${item.precio.toLocaleString('es-AR')} c/u</span>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button onclick="actualizarCantidadItem(${item.id}, -1)" class="w-6 h-6 rounded bg-stone-200 hover:bg-stone-300 text-stone-700 flex items-center justify-center text-xs font-bold">-</button>
+                                <span class="text-xs font-bold w-4 text-center">${item.cantidad}</span>
+                                <button onclick="actualizarCantidadItem(${item.id}, 1)" class="w-6 h-6 rounded bg-stone-200 hover:bg-stone-300 text-stone-700 flex items-center justify-center text-xs font-bold">+</button>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-bold text-stone-900 block">$${totalItem.toLocaleString('es-AR')}</span>
+                            <button onclick="eliminarDelCarrito(${item.id})" class="text-stone-400 hover:text-red-500 text-xs mt-2 transition-colors">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('subtotal-carrito').innerText = `$${subtotal.toLocaleString('es-AR')}`;
+            document.getElementById('total-carrito').innerText = `$${subtotal.toLocaleString('es-AR')}`;
+        }
+
+        // CHECKOUT & PAGO
+        function abrirModalPago() {
+            mostrarModalCarrito(false);
+            const modalPago = document.getElementById('modal-pago');
+            modalPago.classList.remove('hidden');
+            actualizarCalculoPago();
+        }
+
+        function cerrarModalPago() {
+            document.getElementById('modal-pago').classList.add('hidden');
+        }
+
+        function alternarCampoDireccion(esEnvio) {
+            const campoDireccion = document.getElementById('direccion-cliente');
+            const contenedorDireccion = document.getElementById('contenedor-direccion');
+            if (esEnvio) {
+                contenedorDireccion.classList.remove('hidden');
+                campoDireccion.required = true;
+            } else {
+                contenedorDireccion.classList.add('hidden');
+                campoDireccion.required = false;
+            }
+        }
+
+        function actualizarCalculoPago() {
+            const subtotal = carrito.reduce((acumulador, item) => acumulador + (item.precio * item.cantidad), 0);
+            const opcionPago = document.querySelector('input[name="pago"]:checked').value;
+            
+            const elementoSubtotal = document.getElementById('checkout-subtotal');
+            const filaDescuento = document.getElementById('checkout-fila-descuento');
+            const elementoDescuento = document.getElementById('checkout-descuento');
+            const elementoTotalFinal = document.getElementById('checkout-total-final');
+            const pistaCuotas = document.getElementById('pista-cuotas');
+            const elementoPrecioCuota = document.getElementById('precio-cuota');
+
+            elementoSubtotal.innerText = `$${subtotal.toLocaleString('es-AR')}`;
+
+            let totalFinal = subtotal;
+
+            if (opcionPago === 'transferencia') {
+                const descuento = subtotal * 0.15;
+                totalFinal = subtotal - descuento;
+                elementoDescuento.innerText = `-$${descuento.toLocaleString('es-AR')}`;
+                filaDescuento.classList.remove('hidden');
+                pistaCuotas.classList.add('hidden');
+            } else if (opcionPago === 'tarjeta') {
+                filaDescuento.classList.add('hidden');
+                pistaCuotas.classList.remove('hidden');
+                elementoPrecioCuota.innerText = `$${Math.round(subtotal / 12).toLocaleString('es-AR')}`;
+            } else {
+                filaDescuento.classList.add('hidden');
+                pistaCuotas.classList.add('hidden');
+            }
+
+            elementoTotalFinal.innerText = `$${totalFinal.toLocaleString('es-AR')}`;
+        }
+
+        function enviarPedidoWhatsApp(evento) {
+            evento.preventDefault();
+
+            const nombre = document.getElementById('nombre-cliente').value.trim();
+            const telefono = document.getElementById('telefono-cliente').value.trim();
+            const tipoEntrega = document.querySelector('input[name="entrega"]:checked').value;
+            const direccion = tipoEntrega === 'envio' ? document.getElementById('direccion-cliente').value.trim() : 'Retiro por sucursal';
+            const opcionPago = document.querySelector('input[name="pago"]:checked').value;
+
+            const subtotal = carrito.reduce((acumulador, item) => acumulador + (item.precio * item.cantidad), 0);
+            let totalFinal = subtotal;
+            let tituloPago = "";
+
+            switch(opcionPago) {
+                case 'transferencia':
+                    totalFinal = subtotal * 0.85;
+                    tituloPago = "Transferencia Bancaria (15% OFF)";
+                    break;
+                case 'tarjeta':
+                    tituloPago = "Tarjeta de Crédito en 12 Cuotas";
+                    break;
+                case 'efectivo':
+                    tituloPago = "Efectivo / Pago Local";
+                    break;
+            }
+
+            // Actualización de stock tras compra
+            carrito.forEach(itemCarrito => {
+                const prod = productos.find(p => p.id === itemCarrito.id);
+                if (prod) {
+                    prod.stock = Math.max(0, prod.stock - itemCarrito.cantidad);
+                    if (prod.stock === 0) {
+                        prod.visible = false;
+                    }
+                }
+            });
+            guardarProductosEnAlmacenamiento();
+
+            let listaProductos = carrito.map(i => `• ${i.nombre} (x${i.cantidad}) - $${(i.precio * i.cantidad).toLocaleString('es-AR')}`).join('\n');
+
+            let mensaje = `*NUEVO PEDIDO - LENTINI AMOBLAMIENTOS*\n\n` +
+                `*Cliente:* ${nombre}\n` +
+                `*Teléfono:* ${telefono}\n` +
+                `*Entrega:* ${tipoEntrega === 'envio' ? 'Envío a Domicilio' : 'Retiro por Local'}\n` +
+                `*Dirección:* ${direccion}\n` +
+                `*Medio de Pago:* ${tituloPago}\n\n` +
+                `*DETALLE DEL PEDIDO:*\n${listaProductos}\n\n` +
+                `*TOTAL: $${totalFinal.toLocaleString('es-AR')}*\n\n` +
+                `Aguardo confirmación de pedido y datos de pago. ¡Muchas gracias!`;
+
+            carrito = [];
+            guardarCarritoEnAlmacenamiento();
+            cerrarModalPago();
+            renderizarCatalogo();
+
+            const numeroTelefono = "3548 569873";
+            const urlWhatsApp = `https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`;
+            window.open(urlWhatsApp, '_blank');
+        }
+
+        function abrirConsultaWhatsApp(textoPersonalizado) {
+            const numeroTelefono = "3548 569873";
+            const urlWhatsApp = `https://wa.me/${numeroTelefono}?text=${encodeURIComponent(textoPersonalizado)}`;
+            window.open(urlWhatsApp, '_blank');
+        }
+
+        // LÓGICA EXCLUSIVA PANEL DE ADMINISTRACIÓN
+        function renderizarTablaAdmin() {
+            if (!esAdminAutenticado) return;
+
+            const tbody = document.getElementById('cuerpo-tabla-admin');
+            document.getElementById('conteo-admin').innerText = productos.length;
+
+            tbody.innerHTML = productos.map(p => {
+                const stockBajo = p.stock > 0 && p.stock <= 2;
+                const sinStock = p.stock <= 0;
+
+                return `
+                    <tr class="hover:bg-stone-50 transition-colors">
+                        <td class="p-3 font-semibold flex items-center gap-3">
+                            <img src="${p.imagen}" class="w-10 h-10 object-cover rounded-lg bg-stone-100" onerror="this.src='https://placehold.co/100x100/f2e8e5/8c3d19?text=Mueble'">
+                            <div>
+                                <span class="block text-stone-900 font-bold">${p.nombre}</span>
+                                <span class="text-[10px] text-stone-400">ID: #${p.id}</span>
+                            </div>
+                        </td>
+                        <td class="p-3 text-stone-600 font-medium">${p.categoria}</td>
+                        <td class="p-3 font-extrabold text-stone-900">$${p.precio.toLocaleString('es-AR')}</td>
+                        <td class="p-3 text-center">
+                            <div class="flex items-center justify-center gap-1">
+                                <input type="number" value="${p.stock}" min="0" onchange="actualizarStockRapido(${p.id}, this.value)" class="w-16 px-2 py-1 border border-stone-300 rounded text-center text-xs font-bold">
+                                ${stockBajo ? '<span class="w-2 h-2 rounded-full bg-amber-500" title="Stock bajo"></span>' : ''}
+                                ${sinStock ? '<span class="w-2 h-2 rounded-full bg-rose-600" title="Sin stock"></span>' : ''}
+                            </div>
+                        </td>
+                        <td class="p-3 text-center">
+                            <button onclick="alternarVisibilidadProducto(${p.id})" class="px-2.5 py-1 rounded-full text-[10px] font-bold ${p.visible && p.stock > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-200 text-stone-700'}">
+                                ${p.visible && p.stock > 0 ? 'Visible en Tienda' : 'Oculto'}
+                            </button>
+                        </td>
+                        <td class="p-3 text-right space-x-1">
+                            <button onclick="editarProducto(${p.id})" class="p-1.5 bg-stone-100 hover:bg-marca-50 text-stone-600 hover:text-marca-600 rounded-lg transition-colors" title="Editar">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="eliminarProducto(${p.id})" class="p-1.5 bg-stone-100 hover:bg-red-50 text-stone-600 hover:text-red-600 rounded-lg transition-colors" title="Eliminar">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function convertirImagenABase64() {
+            const inputArchivo = document.getElementById('prod-imagen-archivo');
+            const archivo = inputArchivo.files[0];
+            if (archivo) {
+                const lector = new FileReader();
+                lector.onloadend = function() {
+                    document.getElementById('prod-imagen-b64').value = lector.result;
+                    document.getElementById('imagen-previsualizacion').src = lector.result;
+                    document.getElementById('contenedor-previsualizacion').classList.remove('hidden');
+                }
+                lector.readAsDataURL(archivo);
+            }
+        }
+
+        function guardarProducto(evento) {
+            evento.preventDefault();
+            if (!esAdminAutenticado) return;
+
+            const id = document.getElementById('prod-id').value;
+            const nombre = document.getElementById('prod-nombre').value.trim();
+            const categoria = document.getElementById('prod-categoria').value;
+            const precio = parseFloat(document.getElementById('prod-precio').value);
+            const stock = parseInt(document.getElementById('prod-stock').value);
+            const visible = document.getElementById('prod-visible').value === 'true';
+
+            const urlImagen = document.getElementById('prod-imagen-url').value.trim();
+            const b64Imagen = document.getElementById('prod-imagen-b64').value;
+            const imagen = b64Imagen || urlImagen || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80';
+
+            if (id) {
+                const indice = productos.findIndex(p => p.id === parseInt(id));
+                if (indice !== -1) {
+                    productos[indice] = { id: parseInt(id), nombre, categoria, precio, stock, visible, imagen };
+                }
+            } else {
+                const nuevoId = productos.length > 0 ? Math.max(...productos.map(p => p.id)) + 1 : 1;
+                productos.push({ id: nuevoId, nombre, categoria, precio, stock, visible, imagen });
+            }
+
+            guardarProductosEnAlmacenamiento();
+            renderizarTablaAdmin();
+            renderizarCatalogo();
+            limpiarFormulario();
+            alert('Producto guardado correctamente.');
+        }
+
+        function editarProducto(id) {
+            const producto = productos.find(p => p.id === id);
+            if (!producto) return;
+
+            document.getElementById('titulo-formulario').innerText = 'Editar Producto';
+            document.getElementById('prod-id').value = producto.id;
+            document.getElementById('prod-nombre').value = producto.nombre;
+            document.getElementById('prod-categoria').value = producto.categoria;
+            document.getElementById('prod-precio').value = producto.precio;
+            document.getElementById('prod-stock').value = producto.stock;
+            document.getElementById('prod-visible').value = producto.visible.toString();
+            document.getElementById('prod-imagen-url').value = producto.imagen.startsWith('data:') ? '' : producto.imagen;
+            document.getElementById('prod-imagen-b64').value = producto.imagen.startsWith('data:') ? producto.imagen : '';
+
+            document.getElementById('imagen-previsualizacion').src = producto.imagen;
+            document.getElementById('contenedor-previsualizacion').classList.remove('hidden');
+        }
+
+        function actualizarStockRapido(id, nuevoStock) {
+            const producto = productos.find(p => p.id === id);
+            if (producto) {
+                producto.stock = Math.max(0, parseInt(nuevoStock) || 0);
+                guardarProductosEnAlmacenamiento();
+                renderizarCatalogo();
+            }
+        }
+
+        function alternarVisibilidadProducto(id) {
+            const producto = productos.find(p => p.id === id);
+            if (producto) {
+                producto.visible = !producto.visible;
+                guardarProductosEnAlmacenamiento();
+                renderizarTablaAdmin();
+                renderizarCatalogo();
+            }
+        }
+
+        function eliminarProducto(id) {
+            if (confirm('¿Eliminar definitivamente este producto del catálogo?')) {
+                productos = productos.filter(p => p.id !== id);
+                guardarProductosEnAlmacenamiento();
+                renderizarTablaAdmin();
+                renderizarCatalogo();
+            }
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('titulo-formulario').innerText = 'Agregar Nuevo Producto';
+            document.getElementById('formulario-producto').reset();
+            document.getElementById('prod-id').value = '';
+            document.getElementById('prod-imagen-b64').value = '';
+            document.getElementById('contenedor-previsualizacion').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
