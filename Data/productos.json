@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "nombre": "Sommier y Colchón Matrimonial Lujo 140x190",
+    "categoria": "Colchones y Sommiers",
+    "precio": 320000,
+    "stock": 5,
+    "visible": true,
+    "imagen": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=600&q=80"     
+  },
+  {
+    "id": 2,
+    "nombre": "Mesa Comedor Escandinava Roble 160cm",
+    "categoria": "Salón / Comedor",
+    "precio": 210000,
+    "stock": 3,
+    "visible": true,
+    "imagen": "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": 3,
+    "nombre": "Juego de 4 Sillas Nórdicas Eames Tapizadas",
+    "categoria": "Salón / Comedor",
+    "precio": 145000,
+    "stock": 8,
+    "visible": true,
+    "imagen": "https://images.unsplash.com/photo-1580481072645-022f9a6d1270?auto=format&fit=crop&w=600&q=80"
+},
+{
+    "id": 4,
+    "nombre": "Sillón Sofá 3 Cuerpos Chenille Premium",
+    "categoria": "Muebles",
+    "precio": 450000,
+    "stock": 2,
+    "visible": true,
+    "imagen": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80"
+},
+{
+    "id": 5,
+    "nombre": "Colchón Espuma Alta Densidad King Size 2x2m",
+    "categoria": "Colchones y Sommiers",
+    "precio": 490000,
+    "stock": 4,
+    "visible": true,
+    "imagen": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80"
+},
+{
+    "id": 6,
+    "nombre": "Mueble Rack Para TV Moderno Minimalista",
+    "categoria": "Ofertas",
+    "precio": 98000,
+    "stock": 6,
+    "visible": true,
+     "imagen": "https://images.unsplash.com/photo-1601760562234-9814eaa6613a?auto=format&fit=crop&w=600&q=80"
+}
+]
