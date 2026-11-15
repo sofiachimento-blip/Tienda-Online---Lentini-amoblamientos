@@ -9,8 +9,6 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
 });
 const DB_PATH = path.join(__dirname, 'data', 'productos.json');
-const PORT = process.env.PORT || 3000;
-
 const server = app.listen(PORT, () => {
   console.log(`Servidor corriendo exitosamente en el puerto ${PORT}`);
 });
@@ -121,4 +119,4 @@ function guardarProductos(productos) {
     fs.mkdirSync(dir, { recursive: true });
   }
   fs.writeFileSync(DB_PATH, JSON.stringify(productos, null, 2), 'utf-8');
-}
+} 
