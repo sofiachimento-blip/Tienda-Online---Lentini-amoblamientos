@@ -9,6 +9,19 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
 });
 const DB_PATH = path.join(__dirname, 'data', 'productos.json');
+const PORT = process.env.PORT || 3000;
+
+const server = app.listen(PORT, () => {
+  console.log(`Servidor corriendo exitosamente en el puerto ${PORT}`);
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`El puerto ${PORT} ya está en uso. Cierra la otra instancia antes de iniciar.`);
+  } else {
+    throw err;
+  }
+});
 
 // Middlewares
 app.use(cors());
