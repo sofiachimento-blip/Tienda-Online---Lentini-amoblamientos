@@ -5,6 +5,9 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
+});
 const DB_PATH = path.join(__dirname, 'data', 'productos.json');
 
 // Middlewares
@@ -64,7 +67,7 @@ app.put('/api/productos/:id', (req, res) => {
     return res.status(404).json({ mensaje: "Producto no encontrado" });
   }
 
-  productos[index] = { ...productos[index], ...req.body };
+  productos[indserverex] = { ...productos[index], ...req.body };
   guardarProductos(productos);
 
   res.json({ mensaje: "Producto actualizado", producto: productos[index] });
