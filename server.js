@@ -5,17 +5,25 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const http = require('http');
+
+// Crear el servidor HTTP con Express
+const server = http.createServer(app);
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
 });
 const DB_PATH = path.join(__dirname, 'data', 'productos.json');
-const server = app.listen(PORT, () => {
-  console.log(`Servidor corriendo exitosamente en el puerto ${PORT}`);
+// Iniciar servidor con manejo seguro de puertos
+server.listen(PORT, () => {
+  console.log(`====================================================`);
+  console.log(` Servidor de Lentini Amoblamientos corriendo en:`);
+  console.log(` Puerto: ${PORT}`);
+  console.log(`====================================================`);
 });
 
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
-    console.error(`El puerto ${PORT} ya está en uso. Cierra la otra instancia antes de iniciar.`);
+    console.error(`El puerto ${PORT} ya está en uso. Esperando a que se libere...`);
   } else {
     throw err;
   }
