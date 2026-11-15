@@ -85,8 +85,11 @@ app.delete('/api/productos/:id', (req, res) => {
 });
 
 // Servir la aplicación cliente en la ruta principal
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'Lentini - clientes.html'));
+});
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'Lentini - administrador.html'));
 });
 
 // Iniciar servidor
@@ -96,3 +99,10 @@ app.listen(PORT, () => {
   console.log(` http://localhost:${PORT}`);
   console.log(`====================================================`);
 });
+function guardarProductos(productos) {
+  const dir = path.dirname(DB_PATH);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  fs.writeFileSync(DB_PATH, JSON.stringify(productos, null, 2), 'utf-8');
+}
